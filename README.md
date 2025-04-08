@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -78,7 +78,7 @@
     <br><br>
     Cuidamos cada detalle —desde la iluminación tenue que invita a una velada íntima, hasta el servicio que busca que cada comensal se sienta especial— para ofrecer una experiencia única. En <strong>Parco</strong>, no solo servimos sushi: contamos historias a través de cada plato.
   </p>
-  <img src="https://i.imgur.com/nfbZpxM.png">
+  <img src="https://i.imgur.com/gxWpmVI.png">
   <h4>
     Teléfono: <a href="tel:+34932387822">+34 932 387 822</a> | Localización: <a href="https://goo.gl/maps/Qy9HkhshD9QwW8UX8" target="_blank">Passeig de Gràcia, Barcelona</a>
   </h4>
