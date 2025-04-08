@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Invaders JS</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    canvas {
+      display: block;
+      margin: auto;
+      background: #000;
+      border: 1px solid white;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const jugador = {
+      x: canvas.width / 2 - 25,
+      y: canvas.height - 50,
+      width: 50,
+      height: 20,
+      color: "lime",
+      velocidad: 6,
+      balas: []
+    };
+
+    const enemigos = [];
+    const balasEnemigas = [];
+    const muros = [];
+    let score = 0;
+    let nivel = 1;
+    let vidas = 3;
+    let teclas = {};
+
+    class Enemigo {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.width = 40;
+        this.height = 30;
+        this.color = "red";
+        this.dx = 1 + nivel * 0.3;
+      }
+
+      dibujar() {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+      }
+
+      mover() {
+        this.x += this.dx;
+        if (this.x + this.width > canvas.width || this.x < 0) {
+          this.dx *= -1;
+          this.y += 20;
+        }
+        if (Math.random() < 0.003 * nivel) {
+          balasEnemigas.push({
+            x: this.x + this.width / 2,
+            y: this.y + this.height,
+            width: 5,
+            height: 10,
+            dy: 4
+          });
+        }
+      }
+    }
+
+    function crearEnemigos() {
+      enemigos.length = 0;
+      for (let i = 0; i < 5 + nivel; i++) {
+        enemigos.push(new Enemigo(Math.random() * (canvas.width - 40), Math.random() * 50 + 20));
+      }
+    }
+
+    function crearMuros() {
+      muros.length = 0;
+      for (let i = 0; i < 4; i++) {
+        muros.push({ x: 100 + i * 170, y: canvas.height - 150, width: 60, height: 30, salud: 3 });
+      }
+    }
+
+    function actualizar() {
+      if (teclas["ArrowLeft"] && jugador.x > 0) jugador.x -= jugador.velocidad;
+      if (teclas["ArrowRight"] && jugador.x + jugador.width < canvas.width) jugador.x += jugador.velocidad;
+
+      jugador.balas.forEach((bala, i) => {
+        bala.y -= 8;
+        if (bala.y < 0) jugador.balas.splice(i, 1);
+      });
+
+      enemigos.forEach((enemigo, i) => {
+        enemigo.mover();
+        jugador.balas.forEach((bala, j) => {
+          if (colision(bala, enemigo)) {
+            jugador.balas.splice(j, 1);
+            enemigos.splice(i, 1);
+            score += 10;
+          }
+        });
+      });
+
+      balasEnemigas.forEach((bala, i) => {
+        bala.y += bala.dy;
+        if (bala.y > canvas.height) balasEnemigas.splice(i, 1);
+
+        if (colision(bala, jugador)) {
+          balasEnemigas.splice(i, 1);
+          vidas--;
+          if (vidas <= 0) reiniciarJuego();
+        }
+
+        muros.forEach((muro, k) => {
+          if (colision(bala, muro)) {
+            balasEnemigas.splice(i, 1);
+            muro.salud--;
+            if (muro.salud <= 0) muros.splice(k, 1);
+          }
+        });
+      });
+
+      if (enemigos.length === 0) {
+        nivel++;
+        crearEnemigos();
+      }
+    }
+
+    function dibujar() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = jugador.color;
+      ctx.fillRect(jugador.x, jugador.y, jugador.width, jugador.height);
+
+      jugador.balas.forEach(bala => {
+        ctx.fillStyle = "white";
+        ctx.fillRect(bala.x, bala.y, 5, 10);
+      });
+
+      enemigos.forEach(e => e.dibujar());
+
+      balasEnemigas.forEach(bala => {
+        ctx.fillStyle = "red";
+        ctx.fillRect(bala.x, bala.y, bala.width, bala.height);
+      });
+
+      muros.forEach(muro => {
+        let colores = ["#2222FF", "#AAAAFF", "#CCCCCC"];
+        ctx.fillStyle = colores[3 - muro.salud] || "#555";
+        ctx.fillRect(muro.x, muro.y, muro.width, muro.height);
+      });
+
+      ctx.fillStyle = "white";
+      ctx.fillText("Puntuación: " + score, 10, 20);
+      ctx.fillText("Nivel: " + nivel, 10, 40);
+      ctx.fillText("Vidas: " + vidas, 10, 60);
+    }
+
+    function colision(a, b) {
+      return a.x < b.x + b.width && a.x + (a.width || 5) > b.x && a.y < b.y + b.height && a.y + (a.height || 10) > b.y;
+    }
+
+    function loop() {
+      actualizar();
+      dibujar();
+      requestAnimationFrame(loop);
+    }
+
+    function reiniciarJuego() {
+      alert("Game Over\nPuntuación final: " + score);
+      score = 0;
+      nivel = 1;
+      vidas = 3;
+      jugador.balas = [];
+      crearEnemigos();
+      crearMuros();
+    }
+
+    document.addEventListener("keydown", (e) => {
+      teclas[e.key] = true;
+      if (e.key === " ") {
+        jugador.balas.push({ x: jugador.x + jugador.width / 2 - 2.5, y: jugador.y });
+      }
+    });
+    document.addEventListener("keyup", (e) => teclas[e.key] = false);
+
+    crearEnemigos();
+    crearMuros();
+    loop();
+  </script>
+</body>
+</html>
