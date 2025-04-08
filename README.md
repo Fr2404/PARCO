@@ -69,7 +69,6 @@
 
   <center><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_oREBFOsl58l50dkJpqym7-XfWywZ40mCbA&s" alt="Logo PARCO" class="logo"></center>
 
-  <h1>PARCO</h1>
 
   <p>
     En <strong>Parco</strong>, transformamos la tradición japonesa en una experiencia contemporánea de alta cocina en el corazón de Barcelona. Ubicados en el elegante Passeig de Gràcia, somos un restaurante de sushi que fusiona la excelencia culinaria con un ambiente sofisticado y acogedor.
