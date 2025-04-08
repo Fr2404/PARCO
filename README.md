@@ -67,7 +67,7 @@
 </head>
 <body>
 
-  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_oREBFOsl58l50dkJpqym7-XfWywZ40mCbA&s" alt="Logo PARCO" class="logo">
+  <center><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_oREBFOsl58l50dkJpqym7-XfWywZ40mCbA&s" alt="Logo PARCO" class="logo"></center>
 
   <h1>PARCO</h1>
 
